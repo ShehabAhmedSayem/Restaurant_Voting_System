@@ -24,7 +24,10 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    'allauth',
+    'allauth.account',
     'dj_rest_auth',
+    'dj_rest_auth.registration',
     'drf_yasg',
 
     'user',
@@ -72,6 +75,7 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.CustomUser'
+ACCOUNT_ADAPTER = 'core.api.adapter.CustomAccountAdapter'
 TOKEN_EXPIRED_AFTER_SECONDS = 86400
 
 REST_FRAMEWORK = {
@@ -98,6 +102,13 @@ REST_FRAMEWORK = {
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'user.api.v1.serializers.UserSerializer',
 }
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'user.api.v1.serializers.RegisterSerializer'
+}
+REST_AUTH_REGISTER_PERMISSION_CLASSES = (
+    'rest_framework.permissions.IsAuthenticated',
+    'core.api.permissions.IsUserAdmin',
+)
 
 SITE_ID = 1
 

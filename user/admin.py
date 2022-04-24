@@ -12,7 +12,7 @@ from user.models import CustomUser
 
 @admin.register(CustomUser)
 class CustomUserAdmin(BaseUserAdmin):
-    list_display = ['username', 'is_active', 'is_staff']
+    list_display = ['username', 'user_type', 'is_active', 'is_staff']
     fieldsets = [
         [None, {'fields': ['username', 'password']}],
         [_('Permissions'), {
@@ -30,9 +30,6 @@ class CustomUserAdmin(BaseUserAdmin):
     list_filter = (
         'is_staff', 'is_superuser', 'is_active', 'groups', 'user_type'
     )
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 class TokenAdmin(BaseTokenAdmin):

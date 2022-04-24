@@ -22,8 +22,8 @@ class Restaurant(ModelWithTimestamp):
         default=""
     )
     contact_no = models.CharField(
-        verbose_name=_('Contact No'), 
-        max_length=128,
+        verbose_name=_('Contact No'),
+        max_length=24,
         blank=True,
         default=""
     )
@@ -57,11 +57,21 @@ class Menu(ModelWithTimestamp):
         verbose_name=_('Number of Votes'),
         default=0
     )
+    upload_date = models.DateField(
+        verbose_name=_('Upload Date'),
+        auto_now_add=True
+    )
 
     class Meta:
         ordering = ['id']
         verbose_name = _('Menu')
         verbose_name_plural = _('Menus')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['restaurant', 'upload_date'],
+                name='unique_restaurant_menu_per_day'
+            )
+        ]
 
     def __str__(self):
         return f'{self.restaurant}_{self.id}'
@@ -74,14 +84,24 @@ class Vote(ModelWithTimestamp):
         related_name='votes',
         on_delete=models.CASCADE
     )
-    restaurant = models.ForeignKey(
-        verbose_name=_('Restaurant'),
-        to=Restaurant,
+    menu = models.ForeignKey(
+        verbose_name=_('Menu'),
+        to=Menu,
         related_name='votes',
         on_delete=models.CASCADE
+    )
+    voting_date = models.DateField(
+        verbose_name=_('Voting Date'),
+        auto_now_add=True
     )
 
     class Meta:
         ordering = ['id']
         verbose_name = _('Vote')
         verbose_name_plural = _('Votes')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['employee', 'voting_date'],
+                name='unique_employee_vote_per_day'
+            )
+        ]

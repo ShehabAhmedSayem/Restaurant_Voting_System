@@ -1,7 +1,6 @@
 from .default import *
 from .default import env, BASE_DIR
 
-
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 
@@ -29,3 +28,11 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # DEBUG TOOLBAR
 INTERNAL_IPS = ['127.0.0.1']
+
+# If Docker is used then uncomment this to get internal ip
+# import socket
+# hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+# INTERNAL_IPS = (
+#     [ip[: ip.rfind(".")] + ".1" for ip in ips]
+#     + ["127.0.0.1", "10.0.2.2"]
+# )

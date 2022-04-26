@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from voting.models import Restaurant, Menu, Vote
+from voting.models import Restaurant, Menu, Result, Vote
 
 
 @admin.register(Restaurant)
@@ -9,7 +9,8 @@ class RestaurantAdmin(admin.ModelAdmin):
         'owner',
         'name',
         'address',
-        'contact_no'
+        'contact_no',
+        'winning_streak'
     ]
     raw_id_fields = ['owner']
     search_fields = (
@@ -27,6 +28,16 @@ class MenuAdmin(admin.ModelAdmin):
         'menu_image',
         'num_of_votes',
         'upload_date'
+    ]
+    fieldsets = [
+        [None, {
+            'fields': [
+                'restaurant',
+                'menu_image',
+                'num_of_votes',
+                'upload_date'
+            ]
+        }],
     ]
     raw_id_fields = ['restaurant']
     search_fields = (
@@ -53,3 +64,20 @@ class VoteAdmin(admin.ModelAdmin):
         'employee__first_name',
         'employee__last_name'
     )
+
+
+@admin.register(Result)
+class ResultAdmin(admin.ModelAdmin):
+    list_display = [
+        'winning_menu',
+        'voting_date',
+        'is_voting_stopped'
+    ]
+    raw_id_fields = [
+        'winning_menu'
+    ]
+    search_fields = (
+        'winning_menu__restaurant__name',
+        'voting_date'
+    )
+    list_filter = ['is_voting_stopped']

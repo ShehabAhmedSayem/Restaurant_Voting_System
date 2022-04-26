@@ -2,7 +2,7 @@ from django.urls import path
 from dj_rest_auth.views import (
     LoginView, LogoutView, UserDetailsView, PasswordChangeView
 )
-from dj_rest_auth.registration.views import RegisterView
+from user.api.v1.views import RegisterView
 
 
 app_name = 'user-api-v1'

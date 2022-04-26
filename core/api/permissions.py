@@ -47,10 +47,21 @@ class IsUserRestaurantOwner(permissions.BasePermission):
 
 class IsUserOwnsRestaurant(permissions.BasePermission):
     """
-    Allow access only if the user is the owner of the restaurant.
+    Allow object edit access only if the user is the owner of the restaurant.
     """
 
     message = 'Not the owner of the restaurant.'
 
     def has_object_permission(self, request, view, obj):
         return request.user == obj.owner
+
+
+class IsUserOwnsMenu(permissions.BasePermission):
+    """
+    Allow object edit access only if the user is the owner of the menu.
+    """
+
+    message = 'Not the owner of the restaturant of the menu.'
+
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.restaurant.owner

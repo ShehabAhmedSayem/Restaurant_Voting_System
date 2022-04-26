@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
 from core.models import ModelWithTimestamp
 from user.models import CustomUser
 
@@ -27,6 +26,10 @@ class Restaurant(ModelWithTimestamp):
         blank=True,
         default=""
     )
+    winning_streak = models.PositiveIntegerField(
+        verbose_name=_('Winning Streak'),
+        default=0
+    )
 
     class Meta:
         ordering = ['id']
@@ -35,6 +38,14 @@ class Restaurant(ModelWithTimestamp):
 
     def __str__(self):
         return self.name
+
+    def increment_winning_streak(self):
+        self.winning_streak = models.F('winning_streak') + 1
+        self.save()
+
+    def reset_winning_streak(self):
+        self.winning_streak = 0
+        self.save()
 
 
 def menu_image_upload_path(instance, filename):
@@ -58,12 +69,11 @@ class Menu(ModelWithTimestamp):
         default=0
     )
     upload_date = models.DateField(
-        verbose_name=_('Upload Date'),
-        auto_now_add=True
+        verbose_name=_('Upload Date')
     )
 
     class Meta:
-        ordering = ['id']
+        ordering = ['-num_of_votes', 'id']
         verbose_name = _('Menu')
         verbose_name_plural = _('Menus')
         constraints = [
@@ -75,6 +85,14 @@ class Menu(ModelWithTimestamp):
 
     def __str__(self):
         return f'{self.restaurant}_{self.id}'
+
+    def increment_num_of_votes(self):
+        self.num_of_votes = models.F('num_of_votes') + 1
+        self.save()
+
+    def decrement_num_of_votes(self):
+        self.num_of_votes = models.F('num_of_votes') - 1
+        self.save()
 
 
 class Vote(ModelWithTimestamp):
@@ -91,8 +109,7 @@ class Vote(ModelWithTimestamp):
         on_delete=models.CASCADE
     )
     voting_date = models.DateField(
-        verbose_name=_('Voting Date'),
-        auto_now_add=True
+        verbose_name=_('Voting Date')
     )
 
     class Meta:
@@ -105,3 +122,31 @@ class Vote(ModelWithTimestamp):
                 name='unique_employee_vote_per_day'
             )
         ]
+
+
+class Result(ModelWithTimestamp):
+    winning_menu = models.ForeignKey(
+        verbose_name=_('Winning Menu'),
+        to=Menu,
+        related_name='results',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    voting_date = models.DateField(
+        verbose_name=_('Voting Date'),
+        unique=True
+    )
+    is_voting_stopped = models.BooleanField(
+        verbose_name=_('Is Voting Stopped'),
+        default=False
+    )
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = _('Result')
+        verbose_name_plural = _('Results')
+
+    def stop_voting(self):
+        self.is_voting_stopped = True
+        self.save()

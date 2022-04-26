@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.postgres',
 
+    'debug_toolbar',
+    'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
     'allauth',
@@ -30,11 +32,12 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'drf_yasg',
 
-    'user',
-    'voting',
+    'user.apps.UserConfig',
+    'voting.apps.VotingConfig',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -81,21 +84,21 @@ TOKEN_EXPIRED_AFTER_SECONDS = 86400
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer'
     ],
     'DEFAULT_PAGINATION_CLASS':
         'core.api.pagination.StandardResultsSetPagination',
     'DEFAULT_VERSIONING_CLASS':
         'rest_framework.versioning.NamespaceVersioning',
     'DEFAULT_FILTER_BACKENDS': [
-        'rest_framework.filters.SearchFilter',
+        'django_filters.rest_framework.DjangoFilterBackend'
     ]
 }
 

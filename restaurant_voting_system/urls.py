@@ -6,15 +6,17 @@ from django.urls import include, path
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from core.api.permissions import IsSecretKeyValid
+
+def include_doc_api_urlpatterns():
+    return [
+            path('user/v1/', include('user.api.v1.urls')),
+            path('voting/v1/', include('voting.api.v1.urls')),
+        ]
 
 
 def api_urlpatterns(namespace='api'):
     return (
-        [
-            path('voting/v1/', include('voting.api.v1.urls')),
-            path('user/v1/', include('user.api.v1.urls')),
-        ], namespace
+        include_doc_api_urlpatterns(), namespace
     )
 
 
@@ -25,15 +27,14 @@ schema_view = get_schema_view(
       description="API Documentation for Restaurant Voting System."
    ),
    public=True,
-   permission_classes=(IsSecretKeyValid,),
-   patterns=api_urlpatterns(),
+   permission_classes=(),
+   patterns=include_doc_api_urlpatterns(),
 )
 
 
 urlpatterns = [
     path('', include(api_urlpatterns())),
     path('admin/', admin.site.urls),
-    path('api_auth/', include('rest_framework.urls')),
     path(
         'docs/',
         schema_view.with_ui('redoc', cache_timeout=0),

@@ -6,6 +6,8 @@ from user.models import CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
+    user_type = serializers.ReadOnlyField()
+
     class Meta:
         model = CustomUser
         fields = [

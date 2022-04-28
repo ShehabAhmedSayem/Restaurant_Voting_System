@@ -12,7 +12,7 @@ class CustomUser(BaseUser):
     user_type = models.SmallIntegerField(
         verbose_name=_('User Type'),
         choices=UserType.choices,
-        default=UserType.EMPLOYEE
+        default=UserType.ADMIN
     )
 
     REQUIRED_FIELDS = []

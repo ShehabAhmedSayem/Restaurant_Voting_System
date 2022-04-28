@@ -11,15 +11,11 @@ docker-compose up -d --build
 ```
 docker-compose exec web python manage.py migrate --noinput
 ```
-3. Run this command to collect static files
-```
-docker-compose exec web python manage.py collectstatic
-```
-4. Run this command to create superuser. Then input username and password for the superuser.
+3. Run this command to create superuser. Then input username and password for the superuser.
 ```
 docker-compose exec web python manage.py createsuperuser
 ```
-5. Run this command to test the project.
+4. Run this command to test the project.
 ```
 docker-compose exec web python manage.py test
 ```

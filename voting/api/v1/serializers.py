@@ -47,8 +47,6 @@ class MenuSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
         if self.context['request'].method == 'GET':
             self.fields['restaurant'] = RestaurantSerializer(read_only=True)
-        elif self.context['request'].method in ['PUT', 'PATCH']:
-            self.fields['upload_date'] = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -67,6 +65,16 @@ class MenuSerializer(serializers.ModelSerializer):
                 )
             )
 
+    def update(self, instance, validated_data):
+        upload_date = validated_data.get('upload_date', None)
+        if upload_date:
+            validated_data.pop('upload_date')
+            if upload_date != instance.upload_date:
+                raise serializers.ValidationError(
+                    'You cannot change the upload date of the menu.'
+                )
+        return super().update(instance, validated_data)
+
 
 class VoteSerializer(serializers.ModelSerializer):
 
@@ -84,8 +92,6 @@ class VoteSerializer(serializers.ModelSerializer):
             self.fields['menu'] = MenuSerializer(
                 read_only=True, context={'request': self.context['request']}
             )
-        elif self.context['request'].method in ['PUT', 'PATCH']:
-            self.fields['voting_date'] = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -103,6 +109,16 @@ class VoteSerializer(serializers.ModelSerializer):
             )
         except IntegrityError:
             raise ValidationError(detail='You have already voted.')
+
+    def update(self, instance, validated_data):
+        voting_date = validated_data.get('voting_date', None)
+        if voting_date:
+            validated_data.pop('voting_date')
+            if voting_date != instance.voting_date:
+                raise serializers.ValidationError(
+                    'You cannot change the voting date.'
+                )
+        return super().update(instance, validated_data)
 
 
 class ResultSerializer(serializers.ModelSerializer):

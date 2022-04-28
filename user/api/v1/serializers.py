@@ -9,11 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            "user_type",
-            "username",
-            "first_name",
-            "last_name",
-            "email",
+            'id',
+            'user_type',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
         ]
 
 

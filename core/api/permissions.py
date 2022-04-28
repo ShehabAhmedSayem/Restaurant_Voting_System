@@ -65,3 +65,14 @@ class IsUserOwnsMenu(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return request.user == obj.restaurant.owner
+
+
+class IsUserOwnsVote(permissions.BasePermission):
+    """
+    Allow object edit access only if the user is the owner of the vote.
+    """
+
+    message = 'Not the owner of the vote.'
+
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.employee

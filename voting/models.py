@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from core.models import ModelWithTimestamp
 from user.models import CustomUser
@@ -49,7 +50,7 @@ class Restaurant(ModelWithTimestamp):
 
 
 def menu_image_upload_path(instance, filename):
-    return f'menus/{instance.restaurant.name}/{filename}'
+    return f'menu/{instance.upload_date}/{instance.restaurant.name}/{filename}'
 
 
 class Menu(ModelWithTimestamp):
@@ -150,3 +151,17 @@ class Result(ModelWithTimestamp):
     def stop_voting(self):
         self.is_voting_stopped = True
         self.save()
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+        if self.is_voting_stopped and self.winning_menu is None:
+            raise ValidationError(
+                {'winning_menu': _('Choose a winning menu.')}
+            )
+
+    def save(self, *args, **kwargs):
+        if self.is_voting_stopped and self.winning_menu is None:
+            raise ValidationError(
+                message='Voting cannot be stopped without a winning menu.'
+            )
+        super(Result, self).save(*args, **kwargs)

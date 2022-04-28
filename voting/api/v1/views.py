@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from core.api.permissions import (
     IsUserAdmin, IsUserEmployee, IsUserRestaurantOwner,
-    IsUserOwnsRestaurant, IsUserOwnsMenu
+    IsUserOwnsRestaurant, IsUserOwnsMenu, IsUserOwnsVote
 )
 from voting.models import (
     Restaurant, Menu, Vote, Result

@@ -83,10 +83,7 @@ class VoteListCreateAPIView(ListCreateAPIView):
 class VoteRUDAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
-    permission_classes = [IsAuthenticated, IsUserEmployee]
-
-    def get_queryset(self):
-        return Vote.objects.filter(employee=self.request.user)
+    permission_classes = [IsAuthenticated, IsUserOwnsVote]
 
 
 class ResultAPIView(ListAPIView):
@@ -126,9 +123,9 @@ class PublishResultAPIView(APIView):
                     status_code = status.HTTP_204_NO_CONTENT
             else:
                 json_res = {
-                    'message': 'Voting must be stopped to get result!',
-                    'winner': None
+                    'message': 'Voting must be stopped to get result!'
                 }
+                status_code = status.HTTP_400_BAD_REQUEST
         else:
             json_res = {
                 'message': 'Invalid data'

@@ -103,6 +103,13 @@ class VoteSerializer(serializers.ModelSerializer):
                 raise PermissionDenied(
                     detail="Sorry! Voting is stopped for today."
                 )
+            if (
+                validated_data['voting_date']
+                != validated_data['menu'].upload_date
+            ):
+                raise ValidationError(
+                    detail="Voting date and menu upload date must be same."
+                )
             return Vote.objects.create(
                 **validated_data,
                 employee=user
